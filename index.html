@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0">
+  <title>Labubu Wonderland</title>
+  <style>
+    :root {
+      --primary: #FF6B6B;
+      --secondary: #4ECDC4;
+      --accent: #FFE66D;
+      --king-glow: #FF9E7D;
+      --dark-bg: #292F36;
+      --card-bg: rgba(255, 255, 255, 0.1);
+      --text-light: #F7FFF7;
+      --neon-shadow: 0 0 10px, 0 0 20px;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', 'Arial Rounded MT Bold', sans-serif;
+      background: linear-gradient(135deg, #292F36, #1A1E23);
+      color: var(--text-light);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Particles Background */
+    #particles-js { 
+      position: fixed; 
+      width: 100%; 
+      height: 100%; 
+      top: 0; 
+      left: 0; 
+      z-index: -2; 
+    }
+
+    /* Spotlight Effect */
+    body::after {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(
+        circle at var(--x) var(--y),
+        transparent 10%,
+        rgba(0,0,0,0.85) 30%
+      );
+      pointer-events: none;
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    body:hover::after {
+      opacity: 1;
+    }
+
+    /* Custom Cursor */
+    .custom-cursor {
+      position: fixed;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: rgba(255, 107, 107, 0.5);
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      mix-blend-mode: screen;
+      z-index: 9999;
+      transition: transform 0.1s ease, width 0.3s ease, height 0.3s ease;
+    }
+
+    header {
+      width: 100%;
+      padding: 4vh 0;
+      text-align: center;
+      position: relative;
+      background: linear-gradient(to bottom, rgba(41,47,54,0.9), transparent);
+      z-index: 10;
+      transition: transform 0.4s ease;
+    }
+
+    h1 {
+      font-size: clamp(2.8rem, 9vw, 4.5rem);
+      font-weight: 700;
+      letter-spacing: 0.2rem;
+      color: var(--accent);
+      text-shadow: 
+        3px 3px 0 var(--primary),
+        6px 6px 0 rgba(255, 107, 107, 0.3);
+      margin: 2vh 0;
+      padding: 0 5vw;
+      line-height: 1.2;
+      position: relative;
+      display: inline-block;
+      animation: floating 3s ease-in-out infinite;
+    }
+
+    @keyframes floating {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+
+    h1::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      border-radius: 2px;
+    }
+
+    /* Progress Tracker */
+    .progress-tracker {
+      width: 90%;
+      max-width: 500px;
+      margin: 0 auto 30px;
+      background: var(--card-bg);
+      padding: 15px;
+      border-radius: 10px;
+      text-align: center;
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .progress-bar {
+      height: 20px;
+      background: rgba(0,0,0,0.2);
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 10px 0;
+    }
+
+    #progress-fill {
+      height: 100%;
+      width: 5%;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      transition: width 0.5s ease;
+    }
+
+    /* Container & Cards */
+    .container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+      gap: 3vh;
+      padding: 3vh 5vw;
+      width: 100%;
+      max-width: 1800px;
+      margin: 0 auto;
+      perspective: 1000px;
+    }
+
+    /* KING CARD - CENTERPIECE */
+    .card-king {
+      grid-column: 1 / -1;
+      max-width: min(700px, 90vw);
+      margin: 0 auto 5vh;
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 
+        0 10px 30px rgba(255, 158, 125, 0.4),
+        0 0 40px rgba(255, 158, 125, 0.2);
+      transition: transform 0.4s ease;
+      animation: floating 4s ease-in-out infinite;
+      transform-style: preserve-3d;
+    }
+
+    .card-king:hover {
+      transform: scale(1.02) rotateX(5deg) rotateY(5deg);
+    }
+
+    .card-king img {
+      width: 100%;
+      display: block;
+      object-fit: contain;
+      background: rgba(0,0,0,0.1);
+      max-height: 70vh;
+    }
+
+    .card-king .card-caption {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      padding: 3vh 0;
+      background: linear-gradient(to top, rgba(41,47,54,0.95), transparent);
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      text-align: center;
+      color: var(--king-glow);
+      font-weight: 700;
+      letter-spacing: 0.1rem;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+
+    /* REGULAR CARDS */
+    .card {
+      background: var(--dark-bg);
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+      position: relative;
+      backdrop-filter: blur(8px);
+      display: flex;
+      flex-direction: column;
+      transform-style: preserve-3d;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      z-index: -1;
+      background: linear-gradient(45deg, 
+        var(--primary), 
+        var(--secondary), 
+        var(--accent), 
+        var(--primary));
+      background-size: 300% 300%;
+      border-radius: 16px;
+      animation: gradientBorder 4s ease infinite;
+      filter: blur(3px);
+      opacity: 0.7;
+      transition: opacity 0.3s;
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    @keyframes gradientBorder {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .card:hover {
+      transform: translateY(-10px) rotateX(5deg) rotateY(5deg);
+      box-shadow: 
+        0 15px 30px rgba(0,0,0,0.3),
+        0 0 20px rgba(78, 205, 196, 0.3);
+    }
+
+    .card img {
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      flex-grow: 1;
+      background: rgba(0,0,0,0.05);
+      padding: 10px;
+      z-index: 2;
+    }
+
+    .card-caption {
+      padding: 2vh 0;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      text-align: center;
+      font-size: clamp(1.1rem, 3vw, 1.4rem);
+      color: white;
+      font-weight: 600;
+      letter-spacing: 0.05rem;
+      z-index: 2;
+    }
+
+    .rarity-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 3px 8px;
+      border-radius: 10px;
+      font-size: 0.7rem;
+      font-weight: bold;
+      z-index: 3;
+      background: var(--accent);
+      color: #292F36;
+    }
+
+    /* Audio Player */
+    .audio-player {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background: var(--card-bg);
+      padding: 10px 15px;
+      border-radius: 30px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 100;
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    #play-btn {
+      background: var(--primary);
+      border: none;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      cursor: pointer;
+      color: white;
+      display: grid;
+      place-items: center;
+      transition: transform 0.2s;
+    }
+
+    #play-btn:hover {
+      transform: scale(1.1);
+    }
+
+    /* Theme Toggle */
+    #theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--card-bg);
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 100;
+      display: grid;
+      place-items: center;
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(255,255,255,0.1);
+      font-size: 1.2rem;
+    }
+
+    /* Footer */
+    footer {
+      margin-top: auto;
+      padding: 3vh 0;
+      width: 100%;
+      text-align: center;
+      background: linear-gradient(to bottom, transparent, rgba(41,47,54,0.9));
+      color: var(--text-light);
+      font-size: clamp(0.9rem, 2vw, 1.1rem);
+      letter-spacing: 0.1rem;
+    }
+
+    /* Dark Mode */
+    .dark-mode {
+      --primary: #6b47ff;
+      --secondary: #00c8b5;
+      --accent: #ff9e64;
+      --dark-bg: #121212;
+      --card-bg: rgba(30,30,30,0.6);
+      --text-light: #f0f0f0;
+    }
+
+    /* RESPONSIVE ADJUSTMENTS */
+    @media (max-width: 768px) {
+      h1 {
+        font-size: clamp(2rem, 8vw, 2.8rem);
+        text-shadow: 
+          2px 2px 0 var(--primary),
+          4px 4px 0 rgba(255, 107, 107, 0.3);
+      }
+      .container {
+        grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+        gap: 2vh;
+      }
+      .audio-player {
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: max-content;
+      }
+    }
+
+    @media (hover: none) {
+      .card:hover {
+        transform: none;
+      }
+      body::after {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Theme Toggle -->
+  <button id="theme-toggle">🌓</button>
+
+  <!-- Custom Cursor -->
+  <div class="custom-cursor"></div>
+
+  <!-- Particles Background -->
+  <div id="particles-js"></div>
+
+  <header>
+    <h1>LABUBU COLLECTION</h1>
+  </header>
+  
+  
+  
+  <div class="container" id="card-container">
+    <!-- CENTERPIECE KING CARD -->
+    <div class="card-king">
+      <img src="Center.png" alt="Labubu King" loading="eager">
+      <div class="card-caption">🩵 Legendary Labubu 🩵</div>
+    </div>
+    
+    <!-- GENERATED CARDS -->
+    <script>
+      const container = document.getElementById('card-container');
+      const rarities = ['Common', 'Uncommon', 'Rare', 'Epic', 'Legendary'];
+      const colors = ['#4ECDC4', '#FFE66D', '#FF6B6B', '#9B5DE5', '#00BBF9'];
+      
+      for (let i = 1; i <= 19; i++) {
+        const card = document.createElement('div');
+        card.className = 'card';
+        
+        const img = document.createElement('img');
+        img.src = `${i}.png`;
+        img.alt = `Labubu ${i}`;
+        img.loading = 'lazy';
+        img.onerror = function() {
+          this.src = 'placeholder.png';
+        };
+
+        const caption = document.createElement('div');
+        caption.className = 'card-caption';
+        caption.textContent = `Labubu #${i}`;
+
+        const rarity = document.createElement('div');
+        rarity.className = 'rarity-badge';
+        const rarityIndex = Math.min(Math.floor(Math.random() * 5), 3);
+        rarity.textContent = rarities[rarityIndex];
+        rarity.style.background = colors[rarityIndex];
+
+        card.appendChild(img);
+        card.appendChild(caption);
+        card.appendChild(rarity);
+        container.appendChild(card);
+      }
+    </script>
+  </div>
+  
+  <!-- Audio Player -->
+  <div class="audio-player">
+    <button id="play-btn">▶</button>
+    <span style="font-size: 0.8rem;">Labubu Theme</span>
+  </div>
+  
+  <footer>
+    &copy; <span id="year"></span> LABUBU UNIVERSE | DESIGNED WITH ♡ BY LM0702
+  </footer>
+
+  <!-- All JavaScript -->
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+  <script>
+    // Initialize all features
+    document.addEventListener('DOMContentLoaded', function() {
+      // 1. Particles.js Background
+      particlesJS("particles-js", {
+        "particles": {
+          "number": { "value": 80, "density": { "enable": true, "value_area": 800 } },
+          "color": { "value": ["#FF6B6B", "#4ECDC4", "#FFE66D"] },
+          "shape": { "type": "circle" },
+          "opacity": { "value": 0.3, "random": true },
+          "size": { "value": 3, "random": true },
+          "line_linked": { "enable": false },
+          "move": { "enable": true, "speed": 2, "direction": "none", "random": true }
+        }
+      });
+
+      // 2. Custom Cursor
+      const cursor = document.querySelector('.custom-cursor');
+      document.addEventListener('mousemove', (e) => {
+        cursor.style.left = `${e.clientX}px`;
+        cursor.style.top = `${e.clientY}px`;
+      });
+      
+      document.querySelectorAll('.card, button').forEach(el => {
+        el.addEventListener('mouseenter', () => {
+          cursor.style.transform = 'translate(-50%, -50%) scale(2)';
+          cursor.style.background = 'rgba(78, 205, 196, 0.3)';
+        });
+        el.addEventListener('mouseleave', () => {
+          cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+          cursor.style.background = 'rgba(255, 107, 107, 0.5)';
+        });
+      });
+
+      // 3. Spotlight Effect
+      document.addEventListener('mousemove', (e) => {
+        document.body.style.setProperty('--x', `${e.clientX}px`);
+        document.body.style.setProperty('--y', `${e.clientY}px`);
+      });
+
+      // 4. 3D Tilt Effect
+      document.querySelectorAll('.card').forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+          const x = e.offsetX;
+          const y = e.offsetY;
+          const centerX = card.offsetWidth / 2;
+          const centerY = card.offsetHeight / 2;
+          const angleX = (y - centerY) / 15;
+          const angleY = (centerX - x) / 15;
+          
+          card.style.transform = `perspective(1000px) rotateX(${angleX}deg) rotateY(${angleY}deg) translateY(-10px)`;
+        });
+        
+        card.addEventListener('mouseleave', () => {
+          card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0)';
+        });
+      });
+
+      // 5. Audio Player
+      const audio = new Audio('labubu.mp3');
+      audio.loop = true;
+      document.getElementById('play-btn').addEventListener('click', function() {
+        if (audio.paused) {
+          audio.play();
+          this.textContent = '❚❚';
+        } else {
+          audio.pause();
+          this.textContent = '▶';
+        }
+      });
+
+      // 6. Progress Tracker
+      setTimeout(() => {
+        document.getElementById('progress-fill').style.width = '75%';
+        document.getElementById('collected-count').textContent = '15';
+      }, 1000);
+
+      // 7. Theme Toggle
+      const toggle = document.getElementById('theme-toggle');
+      toggle.addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+        localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+      });
+
+      if (localStorage.getItem('theme') === 'dark') {
+        document.body.classList.add('dark-mode');
+      }
+
+      // 8. Parallax Scrolling
+      window.addEventListener('scroll', () => {
+        const scrollY = window.scrollY;
+        document.querySelector('header').style.transform = `translateY(${scrollY * 0.5}px)`;
+        document.querySelector('.card-king').style.transform = `translateY(${scrollY * 0.3}px) rotate(${scrollY * 0.05}deg)`;
+      });
+
+      // 9. Current Year
+      document.getElementById('year').textContent = new Date().getFullYear();
+    });
+  </script>
+</body>
+</html>
